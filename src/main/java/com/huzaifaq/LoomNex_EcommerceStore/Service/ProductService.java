@@ -33,6 +33,10 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         productRepo.deleteById(productId);
     }
+
+    public List<Product> getProductByCategory(String category) {
+        return productRepo.findByCategoryIgnoreCase(category);
+    }
 }
 
 

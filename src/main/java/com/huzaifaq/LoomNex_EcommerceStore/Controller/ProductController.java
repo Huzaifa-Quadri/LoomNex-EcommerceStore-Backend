@@ -3,6 +3,7 @@ package com.huzaifaq.LoomNex_EcommerceStore.Controller;
 import com.huzaifaq.LoomNex_EcommerceStore.Model.Product;
 import com.huzaifaq.LoomNex_EcommerceStore.Service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,12 @@ public class ProductController {
     @GetMapping("/getallproducts")
     public List<Product> getAllProducts(){
         return productService.getAllProducts();
+    }
+
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> getByCategory(@PathVariable String category){
+        List<Product> list = productService.getProductByCategory(category);
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/getproduct/{id}")
