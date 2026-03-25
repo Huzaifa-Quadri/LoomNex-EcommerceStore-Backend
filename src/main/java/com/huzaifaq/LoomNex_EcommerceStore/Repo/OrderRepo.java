@@ -10,8 +10,9 @@ import java.util.List;
 @Repository
 public interface OrderRepo extends JpaRepository<Orders, Long> {
 
-    @Query(value = "select o from Orders o JOIN FETCH o.user") //OR we could've done as JPA QIAry is different from Native SQL Query :-
-    //* @Query(value = "select o.id, o.status, u.name from Orders o INNER JOIN User u ON o.order_id = u.user_id, nativeQuery = true")
-
+    @Query("select o from Orders o JOIN FETCH o.user")
     List<Orders> findAllOrdersWithUsers();
+
+    @Query("select o from Orders o JOIN FETCH o.user u WHERE u.id = :userId")
+    List<Orders> findByUserIdWithUsers(Long userId);
 }

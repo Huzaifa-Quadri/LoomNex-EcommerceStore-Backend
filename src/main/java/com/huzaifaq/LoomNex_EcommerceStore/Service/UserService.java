@@ -2,45 +2,44 @@ package com.huzaifaq.LoomNex_EcommerceStore.Service;
 
 import com.huzaifaq.LoomNex_EcommerceStore.Model.User;
 import com.huzaifaq.LoomNex_EcommerceStore.Repo.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.huzaifaq.LoomNex_EcommerceStore.dto.UserDTO;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    @Autowired
-    UserRepo userRepository;
+    
+    private final UserRepo userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public User registerUser(User reguser) {
-        try{
-            System.out.println("User Registered Successfully");
-            return userRepository.save(reguser);
-        } catch (Exception e) {
-            System.out.println("User Not Registered, Some Error Occured - ");
-            e.printStackTrace();
-        }
-        return null;
+    public UserService(UserRepo userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public User loginUser(String email, String password) {
-        try{
-            User foundUser = userRepository.findByEmail(email);
-            if (foundUser != null && foundUser.getPassword().equals(password)) {
-                System.out.println("Welcome Sir/Mam "+ foundUser.getName()+". ");
-                return foundUser;
-            }else {
-                System.out.println("Invalid Credentials");
-            }
-        } catch (Exception e) {
-            System.out.println("No such User found !");
-            e.printStackTrace();
+    public UserDTO registerUser(User reguser) {
+        if (userRepository.findByEmail(reguser.getEmail()) != null) {
+            throw new RuntimeException("Email already in use");
         }
-
-        return null;
+        reguser.setPassword(passwordEncoder.encode(reguser.getPassword()));
+        User savedUser = userRepository.save(reguser);
+        return convertToDTO(savedUser);
     }
 
-    public List<User> getallUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
+    private UserDTO convertToDTO(User user) {
+        return new UserDTO(user.getId(), user.getName(), user.getEmail());
     }
 }

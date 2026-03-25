@@ -2,28 +2,25 @@ package com.huzaifaq.LoomNex_EcommerceStore.Service;
 
 import com.huzaifaq.LoomNex_EcommerceStore.Model.Product;
 import com.huzaifaq.LoomNex_EcommerceStore.Repo.ProductRepo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductService {
-    @Autowired
-    ProductRepo productRepo;
+    
+    private final ProductRepo productRepo;
+
+    public ProductService(ProductRepo productRepo) {
+        this.productRepo = productRepo;
+    }
 
     public List<Product> getAllProducts() {
-        try {
-            return productRepo.findAll();
-        } catch (Exception e) {
-            System.out.println("Error Loading all products"+e.getMessage());
-        }
-
-        return null;
+        return productRepo.findAll();
     }
 
     public Product getProductById(Long id) {
-        return productRepo.findById(id).orElseThrow(() -> new RuntimeException("No Product Found with this ID"));
+        return productRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("No Product Found with this ID"));
     }
 
     public void addProductToRepo(Product product) {
@@ -38,20 +35,3 @@ public class ProductService {
         return productRepo.findByCategoryIgnoreCase(category);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

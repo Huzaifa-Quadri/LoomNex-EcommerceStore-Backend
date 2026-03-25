@@ -1,31 +1,27 @@
 package com.huzaifaq.LoomNex_EcommerceStore.Controller;
 
-import com.huzaifaq.LoomNex_EcommerceStore.Model.User;
 import com.huzaifaq.LoomNex_EcommerceStore.Service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.huzaifaq.LoomNex_EcommerceStore.dto.UserDTO;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin("*")  //We are allowing everyone as we are not using Spring Security yet
 public class UserController {
-    @Autowired
-    private UserService userService;
+    
+    private final UserService userService;
 
-     @PostMapping("/register")
-     public User registerUser(@RequestBody User reguser){
-         return userService.registerUser(reguser);
-     }
-
-    @PostMapping("/login")
-    public User loginUserService(@RequestBody User loginUser) {
-        return userService.loginUser(loginUser.getEmail(), loginUser.getPassword());
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
+    // Only allow admins to view all users. You'd need to add roles to your User model for this to fully work.
+    // For now, mapping this to ensure it's at least secured. 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getallUsers();
+    public List<UserDTO> getAllUsers(){
+        return userService.getAllUsers();
     }
 }

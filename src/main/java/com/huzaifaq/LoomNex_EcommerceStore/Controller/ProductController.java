@@ -2,20 +2,21 @@ package com.huzaifaq.LoomNex_EcommerceStore.Controller;
 
 import com.huzaifaq.LoomNex_EcommerceStore.Model.Product;
 import com.huzaifaq.LoomNex_EcommerceStore.Service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/getallproducts")
     public List<Product> getAllProducts(){
@@ -34,7 +35,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public void addProduct(@RequestBody Product product){
+    public void addProduct(@Valid @RequestBody Product product){
         productService.addProductToRepo(product);
     }
 

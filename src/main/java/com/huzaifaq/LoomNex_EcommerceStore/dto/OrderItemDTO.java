@@ -4,6 +4,7 @@ public class OrderItemDTO {
     private String productName;
     private double productPrice;
     private int quantity;
+    //constructor, getter and setter
 
     public OrderItemDTO(String productName, double productPrice, int quantity) {
         this.productName = productName;
