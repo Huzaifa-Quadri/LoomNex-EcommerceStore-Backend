@@ -44,6 +44,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // stateless API
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/actuator/**", "/").permitAll() // Allow health checks and waking up Render
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/users/login", "/users/register").permitAll() // Backward compatibility
                 // allow swagger if you use it:
